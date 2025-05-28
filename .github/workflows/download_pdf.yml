@@ -1,14 +1,14 @@
-name: Download Audi PDF
+name: Download Audi PDF (Direct Link)
 
 on:
-  workflow_dispatch:  # Manual run button
+  workflow_dispatch:  # Allows manual run from GitHub UI
 
 jobs:
   download:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Setup Python
@@ -16,16 +16,14 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Playwright
-        run: |
-          pip install playwright
-          playwright install --with-deps
+      - name: Install requests
+        run: pip install requests
 
-      - name: Run the downloader script
+      - name: Run downloader script
         run: python download_pdf.py
 
-      - name: Upload downloaded PDF
+      - name: Upload PDF as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: audi-pdf
-          path: "*.pdf"
+          name: audi-offer
+          path: audi-offer.pdf
