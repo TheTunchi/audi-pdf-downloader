@@ -1,26 +1,16 @@
-from playwright.sync_api import sync_playwright
-import os
+# download_pdf.py
 
-def run():
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        context = browser.new_context(accept_downloads=True)
-        page = context.new_page()
+import requests
 
-        # Go to the Audi PDF viewer
-        page.goto("https://stock.audi.bg/pdf/offer/A-2024-0234633-BG")
-        page.wait_for_timeout(5000)
+# Direct PDF link (no need for browser automation)
+url = "https://stock.audi.bg/pdf/offer/A-2024-0234633-BG.pdf"
 
-        # Click the download button
-        with page.expect_download() as download_info:
-            page.click("#download")
-        download = download_info.value
+# Download the file
+response = requests.get(url)
+response.raise_for_status()  # Raise error if download fails
 
-        file_path = os.path.join(os.getcwd(), download.suggested_filename)
-        download.save_as(file_path)
-        print(f"✅ File downloaded: {file_path}")
+# Save it locally
+with open("audi-offer.pdf", "wb") as f:
+    f.write(response.content)
 
-        browser.close()
-
-if __name__ == "__main__":
-    run()
+print("✅ PDF downloaded successfully")
