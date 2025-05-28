@@ -1,0 +1,31 @@
+name: Download Audi PDF
+
+on:
+  workflow_dispatch:  # Manual run button
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Playwright
+        run: |
+          pip install playwright
+          playwright install --with-deps
+
+      - name: Run the downloader script
+        run: python download_pdf.py
+
+      - name: Upload downloaded PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: audi-pdf
+          path: "*.pdf"
